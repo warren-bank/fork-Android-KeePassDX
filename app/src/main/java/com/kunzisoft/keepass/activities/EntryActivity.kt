@@ -478,7 +478,12 @@ class EntryActivity : LockingActivity() {
                     url = "http://$url"
                 }
 
-                UriUtil.gotoUrl(this, url)
+                val intent = Intent(applicationContext, GroupActivity::class.java)
+                intent.flags = intent.flags or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                applicationContext.startActivity(intent)
+
+                UriUtil.gotoUrl(applicationContext, url)
+
                 return true
             }
             R.id.menu_restore_entry_history -> {
