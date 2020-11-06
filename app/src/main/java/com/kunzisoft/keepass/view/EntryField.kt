@@ -94,6 +94,10 @@ class EntryField @JvmOverloads constructor(context: Context,
         setValue(resources.getString(valueId), isProtected)
     }
 
+    fun getValueView(): TextView {
+        return valueView
+    }
+
     private fun changeProtectedValueParameters() {
         valueView.apply {
             if (isProtected) {

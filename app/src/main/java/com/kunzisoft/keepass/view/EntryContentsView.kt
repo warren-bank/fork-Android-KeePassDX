@@ -19,6 +19,7 @@
 package com.kunzisoft.keepass.view
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.kunzisoft.keepass.R
+import com.kunzisoft.keepass.activities.GroupActivity
 import com.kunzisoft.keepass.adapters.EntryAttachmentsItemsAdapter
 import com.kunzisoft.keepass.adapters.EntryHistoryAdapter
 import com.kunzisoft.keepass.database.element.Attachment
@@ -44,8 +46,8 @@ import com.kunzisoft.keepass.model.StreamDirection
 import com.kunzisoft.keepass.otp.OtpElement
 import com.kunzisoft.keepass.otp.OtpType
 import com.kunzisoft.keepass.settings.PreferencesUtil
+import com.kunzisoft.keepass.utils.UriUtil
 import java.util.*
-
 
 class EntryContentsView @JvmOverloads constructor(context: Context,
                                                   var attrs: AttributeSet? = null,
@@ -98,7 +100,17 @@ class EntryContentsView @JvmOverloads constructor(context: Context,
 
         urlFieldView = findViewById(R.id.entry_url_field)
         urlFieldView.setLabel(R.string.entry_url)
-        urlFieldView.setLinkAll()
+
+        urlFieldView.getValueView().setOnClickListener(View.OnClickListener { view ->
+            if (view is TextView) {
+                val intent = Intent(context, GroupActivity::class.java)
+                intent.flags = intent.flags or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+
+                val url = view.text.toString()
+                UriUtil.gotoUrl(context, url)
+            }
+        })
 
         notesFieldView = findViewById(R.id.entry_notes_field)
         notesFieldView.setLabel(R.string.entry_notes)
@@ -231,7 +243,7 @@ class EntryContentsView @JvmOverloads constructor(context: Context,
         urlFieldView.apply {
             if (url != null && url.isNotEmpty()) {
                 visibility = View.VISIBLE
-                setValue(url)
+                setValue(url, true)
             } else {
                 visibility = View.GONE
             }
